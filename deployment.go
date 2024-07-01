@@ -3,9 +3,7 @@ package main
 type Deployment struct {
 	ApiVersion           string            `yaml:"apiVersion"`
 	Kind                 string            `yaml:"kind"`
-	Namespace            string            `yaml:"namespace"`
-	Labels               map[string]string `yaml:"labels"`
-	Annotations          map[string]string `yaml:"annotations"`
+	Metadata             Metadata          `yaml:"metadata"`
 	Replicas             int               `yaml:"replicas"`
 	RevisionHistoryLimit int               `yaml:"revisionHistoryLimit"`
 	Strategy             map[string]string `yaml:"strategy"`
@@ -23,6 +21,12 @@ type Deployment struct {
 	EnvSecretSpecific    []string
 	EnvConfigmap         []string
 	EnvPlain             map[string]string
+}
+type Metadata struct {
+	Name        string            `yaml:"name"`
+	Namespace   string            `yaml:"namespace"`
+	Labels      map[string]string `yaml:"labels"`
+	Annotations map[string]string `yaml:"annotations"`
 }
 
 func NewDeployment(kind string) *Deployment {
