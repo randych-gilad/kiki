@@ -41,7 +41,20 @@ type SpecTemplate struct {
 type Container struct {
 	VolumeMounts map[string]string            `yaml:"volumeMounts,omitempty"`
 	Resources    map[string]map[string]string `yaml:"resources,omitempty"`
-	Probe        map[string]string            `yaml:"-"`
+	Probes       []Probe                      `yaml:"-"`
+	EnvVars      []Env                        `yaml:"env,omitempty"`
+}
+type Probe struct {
+	HttpGet             HttpGet `yaml:"httpGet"`
+	FailureThreshold    int     `yaml:"failureThreshold,omitempty"`
+	PeriodSeconds       int     `yaml:"periodSeconds,omitempty"`
+	InitialDelaySeconds int     `yaml:"initialDelaySeconds,omitempty"`
+}
+type HttpGet struct {
+	Path string
+	Port string
+}
+type Env struct {
 }
 
 func NewDeployment(kind string, metadata Metadata) *Deployment {
