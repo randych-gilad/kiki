@@ -42,7 +42,7 @@ type Container struct {
 	VolumeMounts map[string]string            `yaml:"volumeMounts,omitempty"`
 	Resources    map[string]map[string]string `yaml:"resources,omitempty"`
 	Probes       []Probe                      `yaml:"-"`
-	EnvVars      []Env                        `yaml:"env,omitempty"`
+	Env          []Env                        `yaml:"env,omitempty"`
 }
 type Probe struct {
 	HttpGet             HttpGet `yaml:"httpGet"`
@@ -54,8 +54,23 @@ type HttpGet struct {
 	Path string
 	Port string
 }
-type Env struct {
+type EnvPlain struct {
+	Name  string `yaml:"name"`
+	Value string `yaml:"value"`
 }
+type EnvKeyRef struct {
+	Name      string    `yaml:"name"`
+	ValueFrom ValueFrom `yaml:"valueFrom"`
+}
+type ValueFrom struct {
+	SecretKeyRef    KeyRef `yaml:"secretKeyRef,omitempty"`
+	ConfigMapKeyRef KeyRef `yaml:"configMapKeyRef,omitempty"`
+}
+type KeyRef struct {
+	Name string `yaml:"name"`
+	Key  string `yaml:"key"`
+}
+type Env interface{}
 
 func NewDeployment(kind string, metadata Metadata) *Deployment {
 	return &Deployment{
