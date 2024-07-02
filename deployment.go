@@ -8,14 +8,13 @@ type Deployment struct {
 	Image             string            `yaml:"image"`
 	Repo              string            `yaml:"-"`
 	Version           string            `yaml:"-"`
-	Port              string            `yaml:"port"`
+	Port              int               `yaml:"port"`
 	EnvSecretLocal    []string          `yaml:"-"`
 	EnvSecretGlobal   map[string]string `yaml:"-"`
 	EnvSecretSpecific []string          `yaml:"-"`
 	EnvConfigmap      []string          `yaml:"-"`
 	EnvPlain          map[string]string `yaml:"-"`
 }
-
 type Metadata struct {
 	Name        string            `yaml:"name"`
 	Namespace   string            `yaml:"namespace"`
