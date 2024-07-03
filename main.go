@@ -9,7 +9,11 @@ import (
 )
 
 func main() {
-	v := ValuesParse("EXAMPLE.yaml")
+	v, err := ValuesParse("EXAMPLE.yaml")
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
 	if err := v.Default(); err != nil {
 		slog.Error(err.Error())
 		return
@@ -27,17 +31,19 @@ func main() {
 	fmt.Println(string(yamlData))
 }
 
-func ValuesParse(filepath string) Values {
+func ValuesParse(filepath string) (*Values, error) {
 	data, err := os.ReadFile(filepath)
 	if err != nil {
 		slog.Error("error reading file: %v", err)
+		return nil, err
 	}
-	values := Values{}
+	values := &Values{}
 	err = yaml.Unmarshal(data, &values)
 	if err != nil {
 		slog.Error("error unmarshaling YAML: %v", err)
+		return nil, err
 	}
-	return values
+	return values, nil
 }
 
 func (v *Values) Default() error {
