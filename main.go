@@ -21,6 +21,7 @@ func main() {
 	yamlData, err := yaml.Marshal(&deployment)
 	if err != nil {
 		slog.Error(err.Error())
+		return
 	}
 
 	fmt.Println(string(yamlData))
@@ -57,7 +58,9 @@ func (v *Values) Default() error {
 		v.Deployment.Replicas = 1
 		slog.Warn("Deployment.Replicas not specified, defaulting to 1")
 	}
-
+	if v.Deployment.Kind == "DaemonSet" && v.Deployment.Strategy == nil {
+		return fmt.Errorf("")
+	}
 	if v.Deployment.Strategy == nil {
 		v.Deployment.Strategy = map[string]string{"type": "RollingUpdate"}
 	}
