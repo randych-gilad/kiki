@@ -59,8 +59,7 @@ func (v *Values) Default() error {
 	}
 
 	if v.Deployment.Strategy == nil {
-		v.Deployment.Strategy = make(map[string]string)
-		v.Deployment.Strategy["type"] = "RollingUpdate"
+		v.Deployment.Strategy = map[string]string{"type": "RollingUpdate"}
 	}
 
 	return nil
