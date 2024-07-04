@@ -10,6 +10,7 @@ import (
 
 func main() {
 	v, err := ValuesParse("EXAMPLE.yaml")
+	v.Assert()
 	if err != nil {
 		slog.Error(err.Error())
 		return
@@ -46,29 +47,34 @@ func ValuesParse(filepath string) (*Values, error) {
 	return values, nil
 }
 
-func (v *Values) Default() error {
+func (v *Values) Assert() error {
+	return nil
+}
+
+func (d *Deployment) Default(v *Values) error {
 	slog.Info("Validate and default values against defined rules...")
 
 	if v.Deployment.Kind == "" {
 		slog.Warn("Deployment.Kind not specified, defaulting to Deployment")
-		v.Deployment.Kind = "Deployment"
+		d.Kind = "Deployment"
 	} else if v.Deployment.Kind != "Deployment" && v.Deployment.Kind != "DaemonSet" {
-		return fmt.Errorf("invalid Deployment.Kind, got: %v, want: Deployment or DaemonSet", v.Deployment.Kind)
+		return fmt.Errorf("invalid Deployment.Kind, got: %w, want: Deployment or DaemonSet", v.Deployment.Kind)
 	}
-
 	if v.Deployment.Annotations == nil {
 		slog.Warn("Deployment.Annotations not specified")
+	} else {
+		d.Metadata.Annotations = v.Deployment.Annotations
 	}
-
 	if v.Deployment.Replicas == 0 {
-		v.Deployment.Replicas = 1
 		slog.Warn("Deployment.Replicas not specified, defaulting to 1")
+		d.Spec.Replicas = 1
+	} else {
+		d.Spec.Replicas = v.Deployment.Replicas
 	}
 	if v.Deployment.Kind == "DaemonSet" && v.Deployment.Strategy == nil {
-		return fmt.Errorf("")
-	}
-	if v.Deployment.Strategy == nil {
-		v.Deployment.Strategy = map[string]string{"type": "RollingUpdate"}
+		return fmt.Errorf("invalid Deployment.Strategy, cannot assign default for DaemonSet")
+	} else {
+		d.Spec.Strategy = map[string]string{"type": "RollingUpdate"}
 	}
 
 	return nil
