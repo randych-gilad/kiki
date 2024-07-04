@@ -4,7 +4,7 @@ type Deployment struct {
 	ApiVersion        string            `yaml:"apiVersion"`
 	Kind              string            `yaml:"kind"`
 	Metadata          Metadata          `yaml:"metadata"`
-	Strategy          map[string]string `yaml:"strategy"`
+	Spec              SpecDeployment    `yaml:"spec"`
 	Image             string            `yaml:"image"`
 	Repo              string            `yaml:"-"`
 	Version           string            `yaml:"-"`
@@ -25,6 +25,7 @@ type SpecDeployment struct {
 	Replicas             int                          `yaml:"replicas"`
 	RevisionHistoryLimit int                          `yaml:"revisionHistoryLimit,omitempty"`
 	Selector             map[string]map[string]string `yaml:"selector"`
+	Strategy             map[string]string            `yaml:"strategy"`
 	Template             Template                     `yaml:"template"`
 }
 type Template struct {
